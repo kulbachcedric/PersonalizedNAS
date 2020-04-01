@@ -1,0 +1,11 @@
+tensorflow-gpu
+numpy
+django
+opencv-python
+tf-explain
+gpuinfo
+sklearn
+tqdm
+pandas
+seaborn
+-e ./ranking/human/human_site

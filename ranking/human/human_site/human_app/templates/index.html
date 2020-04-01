@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div style="text-align: center;">
+    <div style="font-size: 5em; margin: auto; padding: 10px; position: relative; top: 100px; color: white; font-weight: bolder;">Neural Architecture Search,</div>
+    <div style="font-size: 3em; margin: auto; padding: 10px; position: relative; top: 100px; color: white; font-weight: bold;">personalized to your preferences</div>
+    <div style="font-size: 3em; margin: auto; padding: 2px; position: relative; top: 100px; color: white; font-weight: bold;">it's <span style="font-weight: bolder"> PeNAtS!</span></div>
+</div>
+<div style="text-align: center; position: relative; margin: auto">
+    <div style="position:relative; padding-top: 20%; text-align: center;font-size: 24px; font-weight: bold; color: white">Experiments</div>
+    <ul class="list-group" style="font-weight: bold;">
+        {% for experiment_name in experiment_names %}
+        <a href="/experiments/{{ experiment_name }}" class="list-group-item list-group-item-action" > {{ experiment_name }}</a>
+        {%  endfor %}
+    </ul>
+</div>
+
+
+
+{% endblock %}
