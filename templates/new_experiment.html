@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+<script src="{% static "js/index.js" %}"></script>
+<link rel="stylesheet" href="{% static 'css/upload.css' %}">
+
+{% block content %}
+    <section class="section section-1">
+        <h2>Create a new Experiment</h2>
+        <form enctype="multipart/form-data" action="" method="post"> <!-- Do not forget to add: enctype="multipart/form-data" -->
+            {% csrf_token %}
+            <input type="hidden" id="experiment_id" name="experiment_id" value={{ experiement_id }}>
+            {% for form in forms %}
+                {{ form }}
+            {% endfor %}
+
+            <input type="submit" value="Start">
+        </form>
+    </section>
+{% endblock %}

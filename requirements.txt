@@ -1,11 +1,10 @@
-tensorflow-gpu
-numpy
 django
-opencv-python
-tf-explain
-gpuinfo
+tensorflow==2.0.0
 sklearn
 tqdm
 pandas
 seaborn
--e ./ranking/human/human_site
+plotly
+django-crispy-forms
+PyYAML
+tqdm

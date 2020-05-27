@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/upload.css' %}">
+{% block content %}
+    <section class="section section-1">
+        <h2>Choose a dataset</h2>
+        {% for dataset in datasets %}
+        <a href="/dataset/{{ dataset.id }}" class="list-group-item list-group-item-action" > {{ dataset.name }}</a>
+        {%  endfor %}
+    </section>
+{% endblock %}

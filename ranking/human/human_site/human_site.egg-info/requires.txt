@@ -1,5 +1,0 @@
-Django
-dj_database_url
-gunicorn
-whitenoise==3
-ipython

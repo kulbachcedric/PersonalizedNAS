@@ -1,9 +1,0 @@
-tensorflow-gpu
-numpy
-django
-opencv-python
-tf-explain
-gpuinfo
-sklearn
-tqdm
--e ./ranking/human/human_site

@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <title>Neural Architecture Search</title>
+    <meta name=viewport content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Cedric Kulbach" />
+    <meta property="og:type" content="website" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css" integrity="sha256-BJ/G+e+y7bQdrYkS2RBTyNfBHpA9IuGaPmf9htub5MQ=" crossorigin="anonymous" />
+    <script src="{% static "js/jquery.js" %}"></script>
+    <script src="{% static "js/jscrollability.js" %}"></script>
+    <script src="{% static "js/plotly.js" %}"></script>
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/pagePiling.js/1.5.6/jquery.pagepiling.css"></link>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pagePiling.js/1.5.6/jquery.pagepiling.js"></script>
+    <link rel="stylesheet" href="{% static 'css/hover.css' %}" media="all">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+    </style>
+</head>
+    <!--
+    <div class="navbar">
+        <div class="dropdown">
+            <button class="dropbtn">Dropdown
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a href="#">Link 1</a>
+                <a href="#">Link 2</a>
+                <a href="#">Link 3</a>
+            </div>
+        </div>
+    </div>
+    -->
+    {% block content %}{% endblock %}
+
+
+</html>
