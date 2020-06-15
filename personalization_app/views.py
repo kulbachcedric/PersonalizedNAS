@@ -11,10 +11,12 @@ from django.db.models import Q, Count
 from django.urls import reverse
 from django.views.generic import CreateView, FormView
 
+from personalization_app.algorithm.models import Individual
+from personalization_app.algorithm.models.SimpleNN import SimpleNN
 from personalization_app.dao import get_dataset_view
 from personalization_app.experiment_handler import ExperimentExecutor
 from personalization_app.forms import *
-from personalization_app.models import Dataset, DATASET_CHOICES, Experiment
+from personalization_app.models import Dataset, DATASET_CHOICES, Experiment, Personalization
 
 
 def upload(request):
@@ -31,7 +33,7 @@ def upload(request):
         form = DatasetForm()
     return render(request, 'upload.html', context= {'form' : form})
 
-def list_datasets(request):
+def datasets(request):
     datasets = Dataset.objects.all()
     return render(request, 'datasets.html', context={'datasets' : datasets})
 
@@ -49,12 +51,17 @@ def dataset(request, dataset_id:str):
 
 def experiment(request, experiment_id):
     experiment = Experiment.objects.get(pk=experiment_id)
+    settings = [
+        {'name':'cycles','value': experiment.cycles},
+    ]
+
 
     return render(request, 'experiment.html', context={
-        'experiment': experiment
+        'experiment': experiment,
+        'settings': settings
     })
 
-def personalize(request, dataset_id:str):
+def new_experiment(request, dataset_id:str):
     dataset = Dataset.objects.get(pk=dataset_id)
     if request.method == 'POST':
         if request.POST["experiment_id"] != "":
@@ -108,4 +115,29 @@ def personalize(request, dataset_id:str):
         forms = [ExperimentForm()]
     return render(request, 'new_experiment.html', context= {'forms' : forms})
 
+
+def new_personalization(request, experiment_id):
+    experiment = Experiment.objects.get(pk=experiment_id)
+    experiment_executor = ExperimentExecutor(experiment=experiment)
+    db_personalization = Personalization(experiment=experiment)
+    db_personalization.full_clean()
+    db_personalization.save()
+    unrated_comparisons = experiment_executor.create_unranked_comparisons(db_personalization=db_personalization)
+    experiment_executor.personalize(db_personalization=db_personalization)
+    if experiment.model_type == 'SPL':
+        segment_1 = SimpleNN().load(unrated_comparisons[0].segment_1)
+        segment_2 = SimpleNN().load(unrated_comparisons[0].segment_2)
+    elif experiment.model_type == 'DAR':
+        segment_1 = SimpleNN().load(unrated_comparisons[0].segment_1)
+        segment_2 = SimpleNN().load(unrated_comparisons[0].segment_2)
+    else:
+        segment_1 = Individual().load(unrated_comparisons[0].segment_1)
+        segment_2 = Individual().load(unrated_comparisons[0].segment_2)
+
+    return render(request,'personalization.html', context={
+        'personalization'  : db_personalization,
+        'unrated_comparisons' : unrated_comparisons,
+        'segment_1' : segment_1.get_div(),
+        'segment_2' : segment_2.get_div()
+    })
 

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-    <script src="{% static "js/pagepiling.js" %}"></script>
+    <script src="{% static 'js/pagepiling.js' %}"></script>
     <div id="pagepiling">
         <section class="section section-1">
             <h2>{{ name }}</h2>
@@ -18,7 +18,7 @@
         <section class="section section-3">
             <h2>What do you want to do?</h2>
             <div class="row submit-row">
-                <form style="display:inline-block;" action="/personalize/{{ id }}">
+                <form style="display:inline-block;" action="/new_experiment/{{ id }}">
                     {% csrf_token %}
                     <button onclick="submit" class="col-md button hvr-float">
                         <h3>Create new Experiment</h3>
@@ -28,7 +28,7 @@
                 <form style="display:inline-block;" action="/list_datasets">
                     {% csrf_token %}
                     <button onclick="submit" class="col-md button hvr-float">
-                        <h3>Choise another Dataset</h3>
+                        <h3>Show other datasets</h3>
                         <span class="oi oi-data-transfer-download"></span>
                     </button>
                 </form>

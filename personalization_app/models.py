@@ -94,17 +94,25 @@ class DbModel(models.Model):
     def full_clean(self, exclude=None, validate_unique=True):
         super(DbModel, self).full_clean(exclude=exclude, validate_unique=validate_unique)
 
-class RatedComparison(models.Model):
-    experiment = models.ForeignKey(Experiment, related_name='rated_comparisons', on_delete=models.CASCADE)
+class Personalization(models.Model):
+    experiment = models.ForeignKey(Experiment, related_name='personalizations', on_delete=models.CASCADE)
     created_at = models.DateTimeField('Date Created', auto_now_add=True, db_index=True)
-    winner = models.ForeignKey('DbModel', related_name='winner', on_delete=models.CASCADE)
-    looser = models.ForeignKey('DbModel', related_name='looser', on_delete=models.CASCADE)
+
+    def full_clean(self, exclude=None, validate_unique=True):
+        super(Personalization, self).full_clean(exclude=exclude, validate_unique=validate_unique)
+
+
+class RatedComparison(models.Model):
+    personalization = models.ForeignKey(Personalization,related_name='rated_comparisons', on_delete=models.CASCADE)
+    created_at = models.DateTimeField('Date Created', auto_now_add=True, db_index=True)
+    winner = models.ForeignKey(DbModel, related_name='winner', on_delete=models.CASCADE)
+    looser = models.ForeignKey(DbModel, related_name='looser', on_delete=models.CASCADE)
 
     def full_clean(self, exclude=None, validate_unique=True):
         super(RatedComparison, self).full_clean(exclude=exclude, validate_unique=validate_unique)
 
 class UnratedComparison(models.Model):
-    experiment = models.ForeignKey(Experiment, related_name='unrated_comparisons', on_delete=models.CASCADE)
+    personalization = models.ForeignKey(Personalization, related_name='unrated_comparisons', on_delete=models.CASCADE)
     created_at = models.DateTimeField('Date Created', auto_now_add=True, db_index=True)
     segment_1 = models.ForeignKey('DbModel', related_name='segment_1', on_delete=models.CASCADE)
     segment_2 = models.ForeignKey('DbModel', related_name='segment_2', on_delete=models.CASCADE)

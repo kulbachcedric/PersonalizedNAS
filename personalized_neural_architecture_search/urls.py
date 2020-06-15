@@ -26,11 +26,13 @@ from personalized_neural_architecture_search import settings
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'upload', views.upload, name='upload'),
-    url(r'list_datasets', views.list_datasets, name='datasets'),
+    url(r'datasets', views.datasets, name='datasets'),
     url(r'^dataset/(.*)/', views.dataset, name='dataset'),
-    url(r'^personalize/(.*)/', views.personalize, name='personalize'),
+    url(r'^new_experiment/(.*)/', views.new_experiment, name='new_experiment'),
     url(r'^experiment/(.*)/', views.experiment, name='experiment'),
     url(r'^$', views.index, name='index'),
+    url(r'^new_personalization/(.*)/', views.new_personalization, name='new_personalization'),
+
 ] + staticfiles_urlpatterns()
 
 if settings.DEBUG:

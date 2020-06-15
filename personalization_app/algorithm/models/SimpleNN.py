@@ -27,12 +27,13 @@ class SimpleNN(Individual):
         self.config = {}
         self.model = None
         self.plot_data = None
-
+        self.db_model = None
 
 
     def load(self, db_model: DbModel):
 
         archive = zipfile.ZipFile(db_model.model.url, 'r')
+        self.db_model = db_model
         self.plot_data = [pd.read_csv(archive.open(f.filename), sep=';') for f in archive.filelist if
                   f.filename.endswith('.csv')][0]
         self.model = [models.load(archive.open(f.filename)) for f in archive.filelist if

@@ -1,38 +1,44 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-    <script src="{% static "js/pagepiling.js" %}"></script>
+    <script src="{% static 'js/pagepiling.js' %}"></script>
     <div id="pagepiling">
         <section class="section section-1">
             <h2>{{ experiment.name }}</h2>
+            <h3>Created on {{ experiment.created_at }}</h3>
+            <table style="max-width: 200px" class="table">
+                <thead>
+                    <tr>
+                      <th scope="col">Setting</th>
+                      <th scope="col">Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for setting in settings %}
+                    <tr>
+                      <td>{{setting.name}}</td>
+                      <td>{{setting.value}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 
-
-        </section>
-        <section class="section section-2">
-            <h2>Experiments</h2>
-            <h3>Chose one experiment to personalize it</h3>
-            {% for experiment in experiment %}
-            <a href="/experiment/{{ experiment.id }}" class="list-group-item list-group-item-action" > {{ experiment.name }}</a>
-            {%  endfor %}
-        </section>
-        <section class="section section-3">
-            <h2>What do you want to do?</h2>
             <div class="row submit-row">
-                <form style="display:inline-block;" action="/personalize/{{ id }}">
+                <form style="display:inline-block;" action="/new_personalization/{{experiment.id}}">
                     {% csrf_token %}
                     <button onclick="submit" class="col-md button hvr-float">
-                        <h3>Create new Experiment</h3>
+                        <h3>Personalize this Experiment</h3>
                         <span class="oi oi-data-transfer-download"></span>
                     </button>
                 </form>
                 <form style="display:inline-block;" action="/list_datasets">
                     {% csrf_token %}
                     <button onclick="submit" class="col-md button hvr-float">
-                        <h3>Choise another Dataset</h3>
+                        <h3>Show datasets</h3>
                         <span class="oi oi-data-transfer-download"></span>
                     </button>
                 </form>
             </div>
+
         </section>
-    </div>
 {% endblock %}

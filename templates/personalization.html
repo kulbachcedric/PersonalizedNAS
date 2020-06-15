@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <script src="{% static 'js/pagepiling.js' %}"></script>
+    <div id="pagepiling">
+        <section class="section section-1">
+            <h1>Choose the model that you prefer</h1>
+            <div class="row">
+                <div class="segment_1">{{ segment_1|safe }}</div>
+            </div>
+        </section>
+{% endblock %}

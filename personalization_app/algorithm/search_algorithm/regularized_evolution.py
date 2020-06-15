@@ -63,7 +63,7 @@ def regularized_evolution(experiment:Experiment, dataset:Dataset, model_class:In
     agent = LinearAgent(segments=segments[:100], features=list(segments[0].features.all()), preferences=preferences)
 
     if ranking_mode ==2:
-        comparisons = PreferenceController.create_unranked_comparisons(segments=segments[:100], amount=500, experiment_id=experiment_id)
+        #comparisons = PreferenceController.create_unranked_comparisons(segments=segments[:100], amount=500, experiment_id=experiment_id)
         assert preferences is not None
         [agent.score_comparison(comp) for comp in tqdm(comparisons)]  # scoring comparisons on agent based preferences
 
