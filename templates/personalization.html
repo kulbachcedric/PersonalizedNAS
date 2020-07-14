@@ -6,7 +6,24 @@
         <section class="section section-1">
             <h1>Choose the model that you prefer</h1>
             <div class="row">
-                <div class="segment_1">{{ segment_1|safe }}</div>
+                <div class="col-md-6">
+                    <div class="segment_1">{{ segment_1|safe }}</div>
+                    <form action="/response/{{personalization.id}}/" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="response" value="segment_1">
+                        <input type="hidden" name="comarison_id" value="{{ comparison_id }}">
+                        <button onclick="submit" class="col-md button hvr-float">Left</button>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <div class="segment_2">{{ segment_2|safe }}</div>
+                    <form action="/response/{{personalization.id}}/" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="response" value="segment_2">
+                        <input type="hidden" name="comparison_id" value="{{ comparison_id }}">
+                        <button onclick="submit" class="col-md button hvr-float">Right</button>
+                    </form>
+                </div>
             </div>
         </section>
 {% endblock %}

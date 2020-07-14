@@ -32,12 +32,15 @@ class SimpleNN(Individual):
 
     def load(self, db_model: DbModel):
 
-        archive = zipfile.ZipFile(db_model.model.url, 'r')
+        archive = zipfile.ZipFile(db_model.model.path, 'r')
         self.db_model = db_model
-        self.plot_data = [pd.read_csv(archive.open(f.filename), sep=';') for f in archive.filelist if
+        self.plot_data = [pd.read_csv(archive.open(f.filename), sep=',') for f in archive.filelist if
                   f.filename.endswith('.csv')][0]
-        self.model = [models.load(archive.open(f.filename)) for f in archive.filelist if
-                  f.filename.endswith('.h5')][0]
+        for f in archive.filelist:
+            if f.filename.endswith('.h5'):
+                self.model = models.load_model(archive.extract(f.filename))
+                os.remove(f.filename)
+
         self.config = [json.load(archive.open(f.filename)) for f in archive.filelist if
                   f.filename.endswith('.json')][0]
 
@@ -53,6 +56,11 @@ class SimpleNN(Individual):
         return plot(fig, output_type='div', include_plotlyjs=False)
 
     def instantiate_random(self, experiment: Experiment):
+        #parameters:
+        look_back = 1
+
+
+
         df, config = experiment.dataset.get_data()
         dataset = df[['value']]
 
@@ -66,7 +74,7 @@ class SimpleNN(Individual):
 
 
         # reshape into X=t and Y=t+1
-        look_back = 1
+
         trainX, trainY = self.create_dataset(dataset=train, look_back=look_back)
         testX, testY = self.create_dataset(test, look_back)
 
@@ -126,9 +134,9 @@ class SimpleNN(Individual):
                           'test_prediction': list(testPredictPlot.flat)})
         self.plot_data['timestamp'] = df['timestamp']
 
-        self.plot_data.to_csv(str(plot_data_path))
+        self.plot_data.to_csv(str(plot_data_path), sep=';')
 
-        ## Save files
+        ## Save files and create DBModel
 
         with ZipFile(zip_name, 'w') as zip:
             zip.write(str(plot_data_path))

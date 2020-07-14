@@ -32,7 +32,7 @@ urlpatterns = [
     url(r'^experiment/(.*)/', views.experiment, name='experiment'),
     url(r'^$', views.index, name='index'),
     url(r'^new_personalization/(.*)/', views.new_personalization, name='new_personalization'),
-
+    url(r'^response/(.*)/', views.response, name='response'),
 ] + staticfiles_urlpatterns()
 
 if settings.DEBUG:

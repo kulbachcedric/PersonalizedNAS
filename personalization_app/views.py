@@ -16,7 +16,8 @@ from personalization_app.algorithm.models.SimpleNN import SimpleNN
 from personalization_app.dao import get_dataset_view
 from personalization_app.experiment_handler import ExperimentExecutor
 from personalization_app.forms import *
-from personalization_app.models import Dataset, DATASET_CHOICES, Experiment, Personalization
+from personalization_app.models import Dataset, DATASET_CHOICES, Experiment, Personalization, UnratedComparison, \
+    RatedComparison
 
 
 def upload(request):
@@ -115,7 +116,6 @@ def new_experiment(request, dataset_id:str):
         forms = [ExperimentForm()]
     return render(request, 'new_experiment.html', context= {'forms' : forms})
 
-
 def new_personalization(request, experiment_id):
     experiment = Experiment.objects.get(pk=experiment_id)
     experiment_executor = ExperimentExecutor(experiment=experiment)
@@ -125,19 +125,88 @@ def new_personalization(request, experiment_id):
     unrated_comparisons = experiment_executor.create_unranked_comparisons(db_personalization=db_personalization)
     experiment_executor.personalize(db_personalization=db_personalization)
     if experiment.model_type == 'SPL':
-        segment_1 = SimpleNN().load(unrated_comparisons[0].segment_1)
-        segment_2 = SimpleNN().load(unrated_comparisons[0].segment_2)
+        segment_1 = SimpleNN()
+        segment_1.load(unrated_comparisons[0].segment_1)
+        segment_2 = SimpleNN()
+        segment_2.load(unrated_comparisons[0].segment_2)
     elif experiment.model_type == 'DAR':
-        segment_1 = SimpleNN().load(unrated_comparisons[0].segment_1)
-        segment_2 = SimpleNN().load(unrated_comparisons[0].segment_2)
+        segment_1 = SimpleNN()
+        segment_1.load(unrated_comparisons[0].segment_1)
+        segment_2 = SimpleNN()
+        segment_2.load(unrated_comparisons[0].segment_2)
     else:
-        segment_1 = Individual().load(unrated_comparisons[0].segment_1)
-        segment_2 = Individual().load(unrated_comparisons[0].segment_2)
+        segment_1 = Individual()
+        segment_1.load(unrated_comparisons[0].segment_1)
+        segment_2 = Individual()
+        segment_2.load(unrated_comparisons[0].segment_2)
 
     return render(request,'personalization.html', context={
         'personalization'  : db_personalization,
+        'comparison_id' : unrated_comparisons[0].id,
         'unrated_comparisons' : unrated_comparisons,
         'segment_1' : segment_1.get_div(),
         'segment_2' : segment_2.get_div()
     })
+
+def response(request, personalization_id):
+    db_personalization = Personalization.objects.get(pk=personalization_id)
+    experiment = db_personalization.experiment
+    if request.method == "POST":
+        response = request.POST["response"]
+        unrated_comparison = None
+        try:
+            unrated_comparison = UnratedComparison.objects.get(pk=request.POST["comparison_id"])
+        except:
+            print('Unrated Comparison was already deleted')
+        if unrated_comparison is not None:
+            if response == "segment_1":
+                winner = unrated_comparison.segment_1
+                looser = unrated_comparison.segment_2
+            elif response == "segment_2":
+                winner = unrated_comparison.segment_2
+                looser = unrated_comparison.segment_1
+            else:
+                print("No correct response was given")
+                winner , looser = None, None
+            if winner is not None and looser is not None:
+                unrated_comparison.delete()
+                rated_comparison = RatedComparison(winner=winner, looser=looser, personalization=db_personalization)
+                rated_comparison.full_clean()
+                rated_comparison.save()
+
+    unrated_comparisons = db_personalization.unrated_comparisons.all()
+    if len(unrated_comparisons) > 0:
+        # If there are unrated_comparisons return the next comparison
+        if experiment.model_type == 'SPL':
+            segment_1 = SimpleNN()
+            segment_1.load(unrated_comparisons[0].segment_1)
+            segment_2 = SimpleNN()
+            segment_2.load(unrated_comparisons[0].segment_2)
+        elif experiment.model_type == 'DAR':
+            segment_1 = SimpleNN()
+            segment_1.load(unrated_comparisons[0].segment_1)
+            segment_2 = SimpleNN()
+            segment_2.load(unrated_comparisons[0].segment_2)
+        else:
+            segment_1 = Individual()
+            segment_1.load(unrated_comparisons[0].segment_1)
+            segment_2 = Individual()
+            segment_2.load(unrated_comparisons[0].segment_2)
+
+        return render(request, 'personalization.html', context={
+            'personalization': db_personalization,
+            'comparison_id': unrated_comparisons[0].id,
+            'unrated_comparisons': unrated_comparisons,
+            'segment_1': segment_1.get_div(),
+            'segment_2': segment_2.get_div()
+        })
+    else:
+        # calculate personalized metric
+
+
+
+
+
+
+
 
