@@ -119,5 +119,3 @@ class UnratedComparison(models.Model):
 
     def full_clean(self, exclude=None, validate_unique=True):
         super(UnratedComparison, self).full_clean(exclude=exclude, validate_unique=validate_unique)
-
-

@@ -59,8 +59,6 @@ class SimpleNN(Individual):
         #parameters:
         look_back = 1
 
-
-
         df, config = experiment.dataset.get_data()
         dataset = df[['value']]
 

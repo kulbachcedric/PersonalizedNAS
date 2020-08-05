@@ -201,7 +201,7 @@ def response(request, personalization_id):
             'segment_2': segment_2.get_div()
         })
     else:
-        # calculate personalized metric
+        pass# calculate personalized metric
 
 
 
