@@ -6,4 +6,5 @@ tf-explain
 gpuinfo
 sklearn
 tqdm
--e ./ranking/human/human_site
+pandas
+seaborn

@@ -1,70 +1,69 @@
-import datasets
+from sklearn.metrics import make_scorer, accuracy_score, precision_score, recall_score, f1_score
+from tensorflow.python.keras.backend import categorical_crossentropy
+from tensorflow.python.keras.callbacks import CSVLogger
+from tensorflow.python.keras.losses import LossFunctionWrapper
+from tensorflow.python.keras.metrics import Precision, Recall, TruePositives, TrueNegatives
+
+from data import datasets
+
 import numpy as np
 
-from models.config import SearchSpace, HyperParameter
-from search_algorithms.evolution_search import regularized_evolution
-from utils import TargetNetworkType, HyperParameterType
-
-NUMBER_FILTERS = [8, 16, 32, 48, 64]
-FILTER_HEIGHT = [3,5,7,9]
-FILTER_WIDTH = [3,5,7,9]
-
-EXPERIMENT_ID = "Cifar10_AlexNet"
-DATASET = 1
-CYCLES = 1000
-POPULATION_SIZE = 100
-SAMPLE_SIZE = 80
-TARGET_NETWORK_TYPE = TargetNetworkType.AlexNet
-EPOCHS = 50
-BATCH_SIZE = 4056
-
-PRELOAD_POPULATION = True
-RANKING_MODE = 2 #1: human , 2: synthetic, 3: None
-PREFERENCES = {
-    "accuracy" : .5,
-    'epoch_training_time': .5,
-    #"val_accuracy": 0.5,
-    #"gpu_consumption": 1.0
-}
+from models import VariableKerasClassifier
+from models.build_functions import build_AlexNetSimple
 
 
-
-"""
-Data sets:
-            # 1: cifar10
-            # 2: cifar100
-            # 3: MNIST
-            # 4: MNIST-Fashion 
-            # 5: stl10 data set
-"""
 
 if __name__ == '__main__':
-    (X_train, y_train), (X_test, y_test) = datasets.load_data(DATASET)
-    num_classes = datasets.getNumClasses(DATASET)
-    x_train_mean = np.mean(X_train, axis=0)
-    X_train -= x_train_mean
-    X_test -= x_train_mean
 
-    hyper_parameters = []
-    hyper_parameters.append(HyperParameter(HyperParameterType.NUMBER_OF_FILTERS,values=NUMBER_FILTERS))
-    hyper_parameters.append(HyperParameter(HyperParameterType.FILTER_WIDTH,values=FILTER_WIDTH))
-    hyper_parameters.append(HyperParameter(HyperParameterType.FILTER_HEIGHT,values=FILTER_HEIGHT))
-    search_space = SearchSpace(hyper_parameters=hyper_parameters)
+    """
+    Data sets:
+                # 1: cifar10
+                # 2: cifar100
+                # 3: MNIST
+                # 4: MNIST-Fashion
+                # 5: stl10 data set
+    """
 
-    regularized_evolution(
-        experiment_id=EXPERIMENT_ID,
-        cycles=CYCLES,
-        population_size=POPULATION_SIZE,
-        sample_size = SAMPLE_SIZE,
-        target_network_type=TARGET_NETWORK_TYPE,
-        search_space=search_space,
-        X_train=X_train,
-        y_train=y_train,
-        X_val=X_test,
-        y_val=y_test,
-        epochs=EPOCHS,
-        num_classes=num_classes,
-        batch_size=BATCH_SIZE,
-        ranking_mode=RANKING_MODE,
-        preferences= PREFERENCES,
-        preload_database=PRELOAD_POPULATION)
+    # %%
+    losses = [
+        #categorical_crossentropy,
+        LossFunctionWrapper(accuracy_score),
+        LossFunctionWrapper(make_scorer(precision_score, greated_is_better=False)),
+        LossFunctionWrapper(make_scorer(recall_score, greated_is_better=False)),
+        LossFunctionWrapper(make_scorer(f1_score, greated_is_better=False)),
+    ]
+    losses_names = [
+        #'categorical_crossentropy',
+        'accuracy',
+        'precision',
+        'recall',
+        'f1'
+    ]
+
+    metrics = [
+        categorical_crossentropy,
+        'accuracy',
+        Precision(),
+        Recall(),
+        TrueNegatives(),
+        TruePositives(),
+    ]
+    dataset_numbers = [1,2,3,4,5]
+    for dataset_no in dataset_numbers:
+        (X_train, y_train), (X_test, y_test) = datasets.load_data(dataset_no)
+        num_classes = datasets.getNumClasses(dataset_no)
+        x_train_mean = np.mean(X_train, axis=0)
+        X_train -= x_train_mean
+        X_test -= x_train_mean
+
+        for idx, loss in enumerate(losses):
+            classifier = VariableKerasClassifier(build_fn=build_AlexNetSimple,
+                                                 input_shape=X_train.shape[1:],
+                                                 num_classes=num_classes,
+                                                 loss=loss,
+                                                 metrics=metrics)
+            history = classifier.fit(X_train, y_train,
+                                     epochs=100,
+                                     batch_size=25,
+                                     validation_data = (X_test,y_test),
+                                     callbacks=[CSVLogger(f'./results/dataset_{dataset_no}_{losses_names[idx]}.csv', append=True)])

@@ -4,19 +4,15 @@ import random
 from time import sleep
 from typing import List, Dict
 import cv2
-import numpy as np
-from django.core.files import File
 from human_app.views import get_not_rated_comparisons, get_rated_comparisons, get_segments
-from tf_explain.utils.display import heatmap_display, grid_display
 from tqdm import tqdm
 import pandas as pd
 
 from models.config import ModelConfiguration, SearchSpace
 from models.models import AlexNet, TargetNetwork
-from human_app.models import Image, Segment, Feature
+from human_app import Image, Segment, Feature
 
 from preference_controller.preference_controller import PreferenceController
-from ranking.ranknet.ranknet import RanknetScorer
 from ranking.ranknet.ranknet2 import RanknetScorer2
 from ranking.synthetic.agent import LinearAgent
 from utils import TargetNetworkType, HyperParameterType, GradCAM

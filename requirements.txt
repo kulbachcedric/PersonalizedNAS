@@ -1,4 +1,4 @@
-tensorflow-gpu
+tensorflow
 numpy
 django
 opencv-python
@@ -8,4 +8,3 @@ sklearn
 tqdm
 pandas
 seaborn
--e ./ranking/human/human_site

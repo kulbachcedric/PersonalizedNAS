@@ -6,7 +6,6 @@ from sklearn.preprocessing import normalize
 from tensorflow.keras import Sequential, Input, Model
 from tensorflow.keras.layers import Dense, Subtract, Activation, Dropout
 from sklearn import preprocessing
-from tensorflow_core.python import get_default_graph
 import numpy as np
 from ranking.scorer import Scorer
 import tensorflow as tf

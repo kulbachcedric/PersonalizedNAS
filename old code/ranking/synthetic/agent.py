@@ -2,8 +2,6 @@ from typing import List, Dict
 
 from human_app import Comparison, Feature, Segment, get_features_to_array_from_segment
 import numpy as np
-from sklearn import preprocessing
-from tqdm import tqdm
 
 from ranking.scorer import Scorer
 

@@ -2,11 +2,9 @@ from typing import List
 
 from human_app import Comparison, Segment, get_features_to_array_from_segment
 from sklearn.preprocessing import normalize
-from tensorflow.keras import Sequential, Input, Model
+from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Dense, Subtract, Activation
 from tensorflow.keras import backend
-from sklearn import preprocessing
-from tensorflow_core.python import get_default_graph
 import numpy as np
 from ranking.scorer import Scorer
 import tensorflow as tf
