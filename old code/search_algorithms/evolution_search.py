@@ -207,8 +207,3 @@ def regularized_evolution(experiment_id:str,
         df['ranker_rankings'] = ranker_rankings
         df['agent_scores'] = agent_scores
         df.to_csv('scores.csv')
-
-
-
-
-

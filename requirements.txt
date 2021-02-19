@@ -8,3 +8,6 @@ sklearn
 tqdm
 pandas
 seaborn
+nas-bench-201
+jupyter
+torch
